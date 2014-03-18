@@ -5,7 +5,7 @@ import java.util.Scanner;
 class CalculatorProgram
 {
 	Scanner input = new Scanner(System.in);
-	Calculator calc;
+	SimpleCalculator calc;
 	
 	public void init()
 	{

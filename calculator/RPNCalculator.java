@@ -2,9 +2,8 @@ package calculator;
 
 import java.util.Stack;
 
-public class RPNCalculator extends Calculator {
+public class RPNCalculator extends SimpleCalculator {
 	private Stack<Double> stack = new Stack<Double>();
-	private boolean hasResult = false;
 
 	@Override
 	public void takeInputNumber(double token) {
@@ -19,16 +18,6 @@ public class RPNCalculator extends Calculator {
 		setOperator(token);
 		stack.push(getResult());
 		this.hasResult = true;
+		this.result = getResult();
 	}
-
-	@Override
-	public boolean hasOutput() {
-		return hasResult;
-	}
-
-	@Override
-	public double getOutput() {
-		return getResult();
-	}
-
 }

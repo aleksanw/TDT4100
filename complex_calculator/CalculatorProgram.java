@@ -16,6 +16,10 @@ public class CalculatorProgram
 			case "simple":
 				calculator = new SimpleCalculator();
 				break;
+				
+			case "rpn":
+				calculator = new RPNCalculator();
+				break;
 			
 			default:
 				System.out.println("Not implemented");
@@ -26,35 +30,34 @@ public class CalculatorProgram
 	
 	public void run()
 	{
-		while(input.hasNextLine())
+		while(true)
 		{
-			doLine(input.nextLine());
+			doLine();
 		}
 	}
 	
-	
-	private void doLine(String line)
-	{
-		Scanner s = new Scanner(line);
+	private void doLine(){
+		System.out.println("Display:");
+		System.out.println(calculator.getDisplay());
+
+		Scanner line = new Scanner(input.nextLine());
 		
-		while(s.hasNext())
+		while(line.hasNext())
 		{
-			if(input.hasNextDouble())
-				calculator.takeInputNumber(input.nextDouble());
+			if(line.hasNextDouble())
+				calculator.takeInputNumber(line.nextDouble());
 			else
-				calculator.takeInputOperator(input.next());
+				calculator.takeInputOperator(line.next());
 		}
 		
-		s.close();
-		
-		System.out.println(calculator.getDisplay());
+		line.close();
 	}
 	
 	
 	private String ask(String query)
 	{
 		System.out.print(query);
-		return input.next();
+		return input.nextLine();
 	}
 
 	

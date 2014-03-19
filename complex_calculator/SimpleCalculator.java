@@ -1,13 +1,23 @@
 package complex_calculator;
 
+import java.util.Arrays;
+import java.util.List;
+
 class SimpleCalculator extends Calculator
 {
-	Operator operator;
+	String operator;
 	Double left = 0.0;
 	Double right;
 
 	@Override
-	protected boolean hasOperands(int amount) {
+	protected void setOperator(String operator){
+		super.setOperator(operator);
+		this.operator = operator;
+	}
+	
+	@Override
+	protected boolean hasOperands(int amount)
+	{
 		if(right != null)
 			return amount <= 2;
 		else
@@ -15,40 +25,54 @@ class SimpleCalculator extends Calculator
 	}
 	
 	@Override
-	protected void pushOperands(Iterable<Double> operands) {
-		if(!operands.hasNext())
-			return;
-		
-		double operand = operands.next();
-		
-		if(operands.hasNext())
+	protected void pushOperands(List<Double> operands)
+	{
+		if(operands.size() > 1)
 			throw new IllegalArgumentException(
-					"SimplCcalculator can only use operators returning zero or one values.");
+					"SimpleCalculator can only use operators returning zero or one values.");
 		
-		if(operator != null)
-			right = operand;
-		else
-			left = operand;
+		if(operands.size() == 1)
+		{
+			double operand = operands.get(0);
+		
+			if(operator == null)
+			{
+				left = operand;
+			}
+			else
+			{
+				right = operand;
+			}
+		}
 	}
 
+	
 	@Override
-	protected void pushOperator(Operator operator) {
-		this.operator = operator;
+	protected void pushOperator(String operator)
+	{
 		setOperator(operator);
 	}
 
+	
 	@Override
-	protected Iterable<Double> yieldOperands(int amount)
+	protected List<Double> yieldOperands(int amount)
 	{
+		operator = null;
+		double left = this.left;
+		double right = this.right;
+		
 		switch (amount) {
 		case 0:
-			return new DoubleIterable();
+			return Arrays.asList();
 
 		case 1:
-			return new DoubleIterable(left);
-
+			this.left = null;
+			return Arrays.asList(left);
+		
 		case 2:
-			return new DoubleIterable(left, right);
+			this.left = null;
+			this.right = null;
+			return Arrays.asList(left, right);
 
 		default:
 			throw new IllegalArgumentException(
@@ -56,8 +80,6 @@ class SimpleCalculator extends Calculator
 		}
 	}
 
-
-	
 	@Override
 	public String getDisplay() {
 		StringBuilder sb = new StringBuilder();
@@ -66,6 +88,12 @@ class SimpleCalculator extends Calculator
 		{
 			sb.append(" ");
 			sb.append(operator);
+		}
+		
+		if(right != null)
+		{
+			sb.append(" ");
+			sb.append(right);
 		}
 		
 		return sb.toString();

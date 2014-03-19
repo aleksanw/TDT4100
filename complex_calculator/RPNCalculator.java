@@ -2,6 +2,8 @@ package complex_calculator;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Stack;
 
 class RPNCalculator extends Calculator {
@@ -9,19 +11,20 @@ class RPNCalculator extends Calculator {
 
 	@Override
 	public String getDisplay() {
-		PrintWriter output = new PrintWriter(new StringWriter());
-		output.println("Stack:");
+		StringWriter output = new StringWriter();
+		PrintWriter writer = new PrintWriter(output);
+		writer.println("Stack:");
 		
 		for(double operand : stack)
 		{
-			output.println(operand);
+			writer.println(operand);
 		}
 		
 		return output.toString();
 	}
 
 	@Override
-	protected void pushOperands(Iterable<Double> operands) {
+	protected void pushOperands(List<Double> operands) {
 		for(double operand : operands)
 		{
 			stack.push(operand);
@@ -29,21 +32,23 @@ class RPNCalculator extends Calculator {
 	}
 
 	@Override
-	protected void pushOperator(Operator operator) {
-		// TODO Auto-generated method stub
-
+	protected void pushOperator(String operator) {
+		setOperator(operator);
 	}
 
 	@Override
-	protected Iterable<Double> yieldOperands(int amount) {
-		// TODO Auto-generated method stub
-		return null;
+	protected List<Double> yieldOperands(int amount) {
+		List<Double> operands = new ArrayList<Double>();
+		for(int i = 0; i < amount; i++)
+		{
+			operands.add(stack.pop());
+		}
+		return operands;
 	}
 
 	@Override
 	protected boolean hasOperands(int amount) {
-		// TODO Auto-generated method stub
-		return false;
+		return stack.size() >= amount;
 	}
 
 }

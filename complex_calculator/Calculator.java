@@ -1,37 +1,75 @@
 package complex_calculator;
 
-import java.util.HashMap;
+import java.util.Arrays;
+import java.util.List;
+
 
 abstract class Calculator
 {
-	private HashMap<String, Operator> operators = new HashMap<String, Operator>();
-	private Operator currentOperator;
+	private String operator;
+	private int operatorArity;
 	
-	private void addOperator(Operator operator)
+	protected void setOperator(String operator)
 	{
-		String key = operator.getIdentifier();
-		operators.put(key, operator);
+		this.operator = operator;
+		
+		if(operator == null)
+			return;
+		
+		switch(operator)
+		{
+		case "+":
+		case "-":
+		case "*":
+		case "/":
+			operatorArity = 2;
+			break;
+		case "drop":
+			operatorArity = 1;
+			break;
+		case "pi":
+			operatorArity = 0;
+			break;
+		default:
+			throw new IllegalArgumentException(
+					"Unsupported opperator.");
+		}
 	}
 	
 	
-	public Calculator()
+	private List<Double> doCalculation(List<Double> operands)
 	{
-		addOperator(new OperatorPlus());
-		addOperator(new OperatorMinus());
-	}
-	
+		switch(operator)
+		{
+		case "+":
+			return Arrays.asList(operands.get(0) + operands.get(1));
+		case "-":
+			return Arrays.asList(operands.get(0) - operands.get(1));
+		case "*":
+			return Arrays.asList(operands.get(0) * operands.get(1));
+		case "/":
+			return Arrays.asList(operands.get(0) / operands.get(1));
+		case "drop":
+			return Arrays.asList();
+		case "pi":
+			return Arrays.asList(3.13159);
+		}
 
+		throw new IllegalArgumentException(
+				"Unsupported opperator.");
+	}
+
+	
 	public void takeInputNumber(double value)
 	{
-		pushOperands(new DoubleIterable(value));
+		pushOperands(Arrays.asList(value));
 		
 		tryDoCalculation();
 	}
 	
 	
-	public void takeInputOperator(String identifier)
+	public void takeInputOperator(String operator)
 	{
-		Operator operator = operators.get(identifier);
 		pushOperator(operator);
 		
 		tryDoCalculation();
@@ -39,34 +77,17 @@ abstract class Calculator
 	
 	
 	private void tryDoCalculation() {
-		if(currentOperator == null)
-			return;
-		
-		int arity = currentOperator.getArity();
-		
-		if(hasOperands(arity))
+		if(operator != null && hasOperands(operatorArity))
 		{
-			executeCalculation();
+			List<Double> operands = yieldOperands(operatorArity);
+			List<Double> result = doCalculation(operands);
+			pushOperands(result);
 		}
 	}
 	
-	
-	private void executeCalculation()
-	{
-		int arity = currentOperator.getArity();
-		Iterable<Double> operands = yieldOperands(arity);
-		Iterable<Double> result = currentOperator.doCalculation(operands);
-		pushOperands(result);
-	}
-
-	protected void setOperator(Operator operator)
-	{
-		currentOperator = operator;
-	}
-
 	public abstract String getDisplay();
-	protected abstract void pushOperands(Iterable<Double> operands);
-	protected abstract void pushOperator(Operator operator);
-	protected abstract Iterable<Double> yieldOperands(int amount);
+	protected abstract void pushOperands(List<Double> operands);
+	protected abstract void pushOperator(String operator);
+	protected abstract List<Double> yieldOperands(int amount);
 	protected abstract boolean hasOperands(int amount);
 }

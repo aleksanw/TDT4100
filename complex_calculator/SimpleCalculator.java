@@ -58,19 +58,19 @@ class SimpleCalculator extends Calculator
 	protected List<Double> yieldOperands(int amount)
 	{
 		operator = null;
-		double left = this.left;
-		double right = this.right;
+		Double left = this.left;
+		Double right = this.right;
 		
 		switch (amount) {
 		case 0:
 			return Arrays.asList();
 
 		case 1:
-			this.left = null;
+			this.left = 0.0;
 			return Arrays.asList(left);
 		
 		case 2:
-			this.left = null;
+			this.left = 0.0;
 			this.right = null;
 			return Arrays.asList(left, right);
 

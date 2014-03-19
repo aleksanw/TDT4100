@@ -22,9 +22,12 @@ abstract class Calculator
 		case "-":
 		case "*":
 		case "/":
+		case "swap":
 			operatorArity = 2;
 			break;
 		case "drop":
+		case "dup":
+		case "sin":
 			operatorArity = 1;
 			break;
 		case "pi":
@@ -51,8 +54,14 @@ abstract class Calculator
 			return Arrays.asList(operands.get(0) / operands.get(1));
 		case "drop":
 			return Arrays.asList();
+		case "dup":
+			return Arrays.asList(operands.get(0), operands.get(0));
+		case "swap":
+			return Arrays.asList(operands.get(1), operands.get(0));
 		case "pi":
-			return Arrays.asList(3.13159);
+			return Arrays.asList(Math.PI);
+		case "sin":
+			return Arrays.asList(Math.sin(operands.get(0)));
 		}
 
 		throw new IllegalArgumentException(
@@ -82,6 +91,8 @@ abstract class Calculator
 			List<Double> operands = yieldOperands(operatorArity);
 			List<Double> result = doCalculation(operands);
 			pushOperands(result);
+			
+			setOperator(null);
 		}
 	}
 	
